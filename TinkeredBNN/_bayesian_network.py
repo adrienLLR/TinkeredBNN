@@ -47,7 +47,10 @@ class BayesianNetwork(Network):
         for layer in self.layers:
             elbo_value = layer.log_variational_posterior() - layer.log_prior()
         elbo_value = elbo_value - self.likelihood.log_likelihood(X, Y, self.predict)
-        return elbo_value[0, 0]
+        n = 0
+        for layer in self.layers:
+            n = n + layer.w_mean.size + layer.b_mean.size
+        return elbo_value[0, 0] / n
 
     def partial_derivative_w_log_likelihood(self, X, Y):
         """
